@@ -1,0 +1,78 @@
+@import '../node_modules/normalize.css/normalize.css';
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import 'variables';
+
+.App {
+  font-size: $default-font-size;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .react-logo {
+    animation: logo-spin infinite 20s linear;
+    width: 3rem;
+  }
+}
+
+.main-header {
+  padding: 0;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  background-color: $default-nav-bg !important;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  z-index: 3;
+
+  .navbar-brand, .nav-link {
+    color: #fff;
+  }
+}
+.main-content {
+  &__left-menu {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    padding-top: 2.5rem;
+    padding-right: 1.1rem;
+  }
+  
+  &__body {
+    padding: 0;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -1.1rem;
+      width: 1.1rem;
+      bottom: 0;
+      background-color: #fff;
+      z-index: 0;
+    }
+  }
+}
+#spend-track {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+.aside {
+  overflow: auto;
+  margin-top: 3.5rem;
+}
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes logo-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
