@@ -1,6 +1,4 @@
-# Getting Started with Create React App
-
-UI Interface (React.js) for managing User expenses
+# UI Interface (Vue.js) for managing User expenses
 
 ## Available Scripts
 
