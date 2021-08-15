@@ -5,9 +5,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 // import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import './ListItemLink.scss';
+import PropTypes from 'prop-types';
 
 function ListItemLink(props) {
-    const { date, count, isSelected } = props;
+    const { date, count, isSelected, chooseDate } = props;
     const [isLoading, setLoadingStatus] = useState(false);
 
     const elementClassNames = classNames([
@@ -19,11 +20,10 @@ function ListItemLink(props) {
     ]);
 
     return (
-        <a className={elementClassNames} onClick={chooseDate(date)} aria-current="page" href="/">
+        <a className={elementClassNames} onClick={selectDate(date)} aria-current="page" href="/">
             <ListItemIcon 
                 component="span" 
-                classes={{root: 'vertical-menu__item-icon-wrapper'}}
-            >
+                classes={{root: 'vertical-menu__item-icon-wrapper'}}>
                 <ShoppingCartOutlinedIcon 
                     color="action" 
                     className="feather feather-shopping-cart vertical-menu__item-icon"
@@ -35,13 +35,21 @@ function ListItemLink(props) {
         </a>
     );
 
-    function chooseDate(date) {
+    function selectDate(date) {
         return (event) => {
             event.preventDefault();
             setLoadingStatus(true);
+            chooseDate(date);
             console.log(date);
         };
     }
 }
+
+ListItemLink.propTypes = {
+    date: PropTypes.string.isRequired,
+    count: PropTypes.number.isRequired,
+    isSelected: PropTypes.bool.isRequired,
+    chooseDate: PropTypes.func.isRequired
+};
 
 export default ListItemLink;

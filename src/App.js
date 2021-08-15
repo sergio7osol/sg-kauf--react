@@ -11,8 +11,11 @@ class App extends React.Component {
     this.state = {
       title: 'SG-Kauf--React',
       dates: [],
+      activeDateBuys: [],
       // selecteDate: '06.01.2021'
     };
+
+    this.getDate = this.getDate.bind(this);
   }
 
   render() {
@@ -41,7 +44,7 @@ class App extends React.Component {
                 <div className="row">
                   <div className="main-content__left-menu">
                     {/* <left-menu :dates='dates' :selected-date='activeDate' @date-selected='getDate' :key='Date.now()' />  */}
-                    <LeftMenu dates={this.state.dates} selected-date={this.state.selectedDate} />  
+                    <LeftMenu dates={this.state.dates} selected-date={this.state.selectedDate} chooseDate={this.getDate} />  
                   </div>
                   <div className="main-content__body col">
                     <BuyList dateBuys="activeDateBuys" /> {/* @save-product="saveProduct" @remove-product="removeProduct" */}
@@ -87,6 +90,37 @@ class App extends React.Component {
       )
       .catch(function (err) {
         console.log('Fetch Error :-S', err);
+      });
+  }
+  getDate(newDate) {
+    let thisApp = this;
+    console.log('newDate: ', newDate);
+
+
+    const dateToSelect = thisApp.state.dates.find(item => item.date === newDate);
+
+    if (dateToSelect.buys) {
+      this.activeDateBuys = dateToSelect.buys.slice();
+      return true;
+    }
+
+    fetch(`http://localhost:3030/read-date?date=${newDate}`)
+      .then(
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+            return;
+          }
+
+          response.json().then(function(data) {
+            dateToSelect.buys = data;
+            thisApp.activeDateBuys = dateToSelect.buys.slice(); 
+            console.log('thisApp.activeDateBuys: ', JSON.stringify(thisApp.activeDateBuys, null, 2));
+          });
+        }
+      )
+      .catch(function(err) {
+        console.log('getDate', 'Fetch Error :-S', err);
       });
   }
 }
