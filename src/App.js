@@ -8,38 +8,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dates: [{
-        "date": "04.01.2021",
-        "count": 22
-      },
-      {
-        "date": "05.01.2021",
-        "count": 9
-      },
-      {
-        "date": "06.01.2021",
-        "count": 15
-      },
-      {
-        "date": "09.01.2021",
-        "count": 21
-      },
-      {
-        "date": "12.01.2021",
-        "count": 5
-      },
-      {
-        "date": "12.03.2021",
-        "count": 3
-      }],
-      selecteDate: '06.01.2021'
+      title: 'SG-Kauf--React',
+      dates: [],
+      // selecteDate: '06.01.2021'
     };
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
   }
 
   render() {
@@ -84,6 +56,37 @@ class App extends React.Component {
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+    this.getAllDates();
+  }
+
+  componentWillUnmount() {
+  }
+
+  getAllDates() {
+    let thisApp = this;
+
+    fetch('http://localhost:3030/list-dates')
+      .then(
+        function (response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+            return;
+          }
+
+          response.json().then(function (data) {
+            // console.log('incoming dates: ', JSON.stringify(data, null, 2), data.length);
+            if (data.length) {
+              thisApp.setState({dates: data});
+            }
+          });
+        }
+      )
+      .catch(function (err) {
+        console.log('Fetch Error :-S', err);
+      });
   }
 }
 
