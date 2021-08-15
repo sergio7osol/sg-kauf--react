@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.scss';
 
 import LeftMenu from './components/LeftMenu/LeftMenu';
+import BuyList from './components/BuyList/BuyList';
 
 class App extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class App extends React.Component {
                     <LeftMenu dates={this.state.dates} selected-date={this.state.selectedDate} />  
                   </div>
                   <div className="main-content__body col">
-                    {/* <buy-list :dateBuys="activeDateBuys" @save-product="saveProduct" @remove-product="removeProduct" /> */}
+                    <BuyList dateBuys="activeDateBuys" /> {/* @save-product="saveProduct" @remove-product="removeProduct" */}
                   </div>
                 </div>
               </div>
