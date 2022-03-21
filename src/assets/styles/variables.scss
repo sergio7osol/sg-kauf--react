@@ -1,0 +1,31 @@
+$default-text-color: #000;
+$default-font-size: 16px;
+$default-bg-color: #fff;
+
+$default-menu-bg-color: #343a40;
+$default-menu-color: #fff;
+$default-menu-separator-color: #bb88;
+$default-menu-f-size: 18px; 
+
+$default-outline-color: #41b883;
+$dark-outline-color: #157347;
+$default-table-stripped-color: adjust-color($default-outline-color, $alpha: -0.9);
+//rgba(65, 184, 131, .15)
+
+$default-menu-btn-bg-color: #5c636a;
+$default-select-button-bg: #0070BA;
+
+$default-table-bg-color: #fff;
+
+$weather-title-line-color: #fff;
+$weather-title-line-bg: #1257ab;
+$weather-header-body-color: #060606;
+$weather-header-body-bg-color: #f7f7f7;
+$weather-header-body-side-color: #ffcf15;
+$weather-header-cell-border-light-color: #6297e4;
+$weather-body-cell-top-border-light-color: #d1e4ff;
+
+
+$default-nav-bg: #343a40;
+$react-highlight-color: #61dafb;
+$react-secondary-highlight-color: rgb(141, 200, 145);
