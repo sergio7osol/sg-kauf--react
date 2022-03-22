@@ -13,7 +13,7 @@ interface Props {
 
 export const LeftMenu: React.FC<Props> = ({ items = [], activeItem = {}, loadingItem = '', chooseItem }) => {
     const [query, setQuery] = useState('');
-    const [filteredItems, setFilteredItems] = useState<DetailedDateInfo[]>(items);
+    const [filteredItems, setFilteredItems] = useState<DetailedDateInfo[]>([]);
 
     const countProducts = (date: DetailedDateInfo): number => {
         if (date.count) {
@@ -37,6 +37,8 @@ export const LeftMenu: React.FC<Props> = ({ items = [], activeItem = {}, loading
         setFilteredItems(foundItems);
     };
 
+    console.log('filteredItems ', filteredItems);
+
     return (
         <nav id="sidebarMenu" className="vertical-menu">
             {/* <SortBox :active-sort-order="sortOrder" @sort-order="changeSortOrder($event)" /> */}
@@ -45,24 +47,25 @@ export const LeftMenu: React.FC<Props> = ({ items = [], activeItem = {}, loading
             </div>
             <ul className="vertical-menu__list">
                 {
-                    filteredItems.map((item: DetailedDateInfo) => (
-                        <li className="nav-item vertical-menu__list-item" key={item.date + item.count}>
-                            <a className={`
-                                    vertical-menu__item-link 
-                                    ${item.date === activeItem.date ? 'vertical-menu__item-link--active' : ''}
-                                    ${item.date === loadingItem ? 'vertical-menu__item--loading' : ''}
-                                `}
-                                href="/"
-                                onClick={(e) => chooseItem(e, item)}
-                            >
-                                <span className="vertical-menu__count-icon">{countProducts(item)}</span>
-                                <ShoppingCartImage />
-                                <span className="vertical-menu__item-text">{item.date}</span>
-                            </a>
-                        </li>
-                    ))
+                    (!filteredItems.length ? items : filteredItems) // TODO: find out - why filteredItems are not initially shown
+                        .map((item: DetailedDateInfo) => (
+                            <li className="nav-item vertical-menu__list-item" key={item.date + item.count}>
+                                <a className={`
+                                        vertical-menu__item-link 
+                                        ${item.date === activeItem.date ? 'vertical-menu__item-link--active' : ''}
+                                        ${item.date === loadingItem ? 'vertical-menu__item--loading' : ''}
+                                    `}
+                                    href="/"
+                                    onClick={(e) => chooseItem(e, item)}
+                                >
+                                    <span className="vertical-menu__count-icon">{countProducts(item)}</span>
+                                    <ShoppingCartImage />
+                                    <span className="vertical-menu__item-text">{item.date}</span>
+                                </a>
+                            </li>
+                        ))
                 }
             </ul>
         </nav >
-    )
+    );
 }
