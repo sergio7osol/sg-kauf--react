@@ -10,8 +10,8 @@ export const SearchBox: React.FC<Props> = ({ searchValue = '', searchCallback })
     const onTypedIn = (event: React.FormEvent<HTMLInputElement>) => searchCallback((event.target as HTMLInputElement).value);
 
     return (
-        <div className="search-box" style={{display: 'flex', flexDirection: 'column'}}>
-            <span className="p-listbox-filter-icon pi pi-search"></span> 
+        <div className="search-box">
+            <span className="p-listbox-filter-icon pi pi-search search-box__icon"></span> 
             <InputText className="search-box__ctrl" onChange={e => onTypedIn(e)} value={searchValue} />
         </div> 
     )
