@@ -12071,6 +12071,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"primeicons@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "primeicons@npm:5.0.0"
+  checksum: f391179f0c774064af417c0d4dbee4c37c714165632f23a2b93083322e4362ef9b1978d3c9aa09ed4ef0187c70dc5501a208b7f40c64c1e88a89462801b7e8c0
+  languageName: node
+  linkType: hard
+
+"primereact@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "primereact@npm:7.2.1"
+  peerDependencies:
+    primeicons: ^5.0.0
+    react: ^17.0.1
+    react-dom: ^17.0.1
+    react-transition-group: ^4.4.1
+  peerDependenciesMeta:
+    react-transition-group:
+      optional: true
+  checksum: f76c2beec3744c05f400ef5dc0841a9db9a37806367537f66b8eab801ee93e83e936572b3dec9bb69e42220f7eec30f1111b17e134007807af8de2967c38816b
+  languageName: node
+  linkType: hard
+
 "process-nextick-args@npm:~2.0.0":
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1"
@@ -12510,7 +12532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^4.4.0":
+"react-transition-group@npm:^4.4.0, react-transition-group@npm:^4.4.2":
   version: 4.4.2
   resolution: "react-transition-group@npm:4.4.2"
   dependencies:
@@ -13428,10 +13450,13 @@ __metadata:
     eslint-plugin-react: ^7.25.1
     eslint-plugin-react-hooks: ^4.2.1-alpha-bd255700d-20210816
     normalize.css: ^8.0.1
+    primeicons: ^5.0.0
+    primereact: ^7.2.1
     prop-types: ^15.7.2
     react: ^17.0.2
     react-dom: ^17.0.2
     react-scripts: 4.0.3
+    react-transition-group: ^4.4.2
     sass: ^1.37.5
     typescript: ^4.3.5
     web-vitals: ^1.0.1
