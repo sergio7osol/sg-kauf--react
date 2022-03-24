@@ -10,8 +10,9 @@ import { ShoppingDatesService } from './services/shopping-dates.service';
 // Types:
 // import Buy from './types/buy.type';
 import { MainHeader } from './components/MainHeader/MainHeader';
-import DetailedDateInfo from './types/DetailedDateInfo';
 import { LeftMenu } from './components/LeftMenu/LeftMenu';
+import { BuySection } from './components/BuySection/BuySection';
+import DetailedDateInfo from './types/DetailedDateInfo';
 import BuyInfo from './types/BuyInfo';
 
 interface Props { }
@@ -45,7 +46,7 @@ class App extends React.Component<Props, State> {
             <LeftMenu items={this.state.shoppingDates} activeItem={this.state.activeDate} loadingItem={this.state.loadingDate} chooseItem={this.onDateSelected} />
           </div>
           <div className="main-content__body col">
-            {/* <app-buy-section [buys]="activeDate.buys"></app-buy-section> */}
+            <BuySection activeDate={this.state.activeDate} />
             <RocketSmokeImage />
             <CloudsImage />
           </div>
