@@ -1,23 +1,24 @@
 import './BuyList.scss';
 import BuyInfo from '../../../types/BuyInfo';
+import { Buy } from './Buy/Buy';
 
 interface Props {
-  buys: BuyInfo[] | undefined
+  buys: BuyInfo[] | undefined,
+  removeBuy: (buy: BuyInfo) => boolean | void
 }
 
-export const BuyList: React.FC<Props> = ({ buys = [] }) => {
+export const BuyList: React.FC<Props> = ({ buys = [], removeBuy }) => {
   return (
-    <>
-      <h3>Buy List</h3>
-      <ul className="buy-section__list buy-list">
+      <div className="buy-list-wrapper">
+      <ul className="buy-list">
         {
           buys && buys.map((buy: BuyInfo) => (
-            <li className="buy-list__buy" key={buy.date + buy.time}>
-              <p>Buy {buy.date + ' : ' + buy.time}</p>
+            <li className="buy-list__item" key={buy.date + buy.time}>
+              <Buy buy={buy} removeBuy={removeBuy} />
             </li>
           ))
         }
       </ul>
-    </>
+      </div>
   )
 }

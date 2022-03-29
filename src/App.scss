@@ -113,3 +113,25 @@ svg#clouds {
     visibility: hidden;
   }
 }
+
+.btn {
+  &--icon {
+    &-remove {
+      font-size: 1.7rem;
+      color: #f00;
+      padding-top: 0;
+      padding-bottom: 0;
+      line-height: 1.1;
+      vertical-align: bottom;
+      &:hover {
+        color: lighten(#f00, 10%);
+      }
+      &:active {
+        color: darken(#f00, 10%);
+      }
+      &::before {
+        content: "\2718";
+      }
+    }
+  }
+}

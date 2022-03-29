@@ -1,6 +1,5 @@
 import * as React from 'react';
 import logo from './logo.svg';
-import { ReactComponent as RocketSmokeImage } from './assets/images/rocket-smoke.svg';
 import { ReactComponent as CloudsImage } from './assets/images/clouds.svg';
 import './App.scss';
 import { ShoppingDatesService } from './services/shopping-dates.service';
@@ -35,6 +34,7 @@ class App extends React.Component<Props, State> {
       activeDate: {} as DetailedDateInfo
     } as State;
     this.onDateSelected = this.onDateSelected.bind(this);
+    this.removeBuy = this.removeBuy.bind(this);
   }
 
   render() {
@@ -46,8 +46,7 @@ class App extends React.Component<Props, State> {
             <LeftMenu items={this.state.shoppingDates} activeItem={this.state.activeDate} loadingItem={this.state.loadingDate} chooseItem={this.onDateSelected} />
           </div>
           <div className="main-content__body col">
-            <BuySection activeDate={this.state.activeDate} />
-            <RocketSmokeImage />
+            <BuySection activeDate={this.state.activeDate} removeBuy={this.removeBuy} />
             <CloudsImage />
           </div>
         </div>
@@ -112,6 +111,55 @@ class App extends React.Component<Props, State> {
         return true;
     }
   }
+
+  removeBuy (buy: BuyInfo): boolean | void {
+    console.log('CHECK: ', this.state.shoppingDates);
+    const existingShoppingDate = this.state.shoppingDates.find((shoppingDate: DetailedDateInfo) => shoppingDate.date === buy.date);
+    const existingBuy = existingShoppingDate && existingShoppingDate.buys?.find((buyItem: BuyInfo) => buyItem.time === buy.time);
+    if (!existingBuy) {
+      console.log(`Buy for deleting on ${buy.date} at ${buy.time} was not found.`);
+      return false;
+    }
+
+    if ((window as Window).confirm('Are you sure, you want to delete this buy?')) {
+      console.log(`Prompted deleting of the buy. Confirmed. The buy on ${buy.date} at ${buy.time} is going to be deleted...`);
+    } else {
+      console.log(`Prompted deleting of the buy. Rejected. The buy on ${buy.date} at ${buy.time} is NOT going to be deleted.`);
+      return false;
+    }
+    const urlSuffix = `date=${buy.date}&time=${buy.time}`;
+
+    this.shoppingDatesService.deleteBuy(urlSuffix) // TODO: make no response from server -> do it locally
+      .then((newArray: BuyInfo[]) => {
+          if (newArray) {
+              console.log(`The buy on ${buy.date} at ${buy.time} was successfully removed. ${newArray.length} buys left for this date.`);
+              if (newArray.length) {
+                  if (existingShoppingDate && existingShoppingDate.buys) {
+                      existingShoppingDate.buys = newArray;
+                  }
+              } else if (existingShoppingDate) {
+                  console.log(`Date ${buy.date} with no buys left is going to be removed...`);
+                  const indexOfDateToDelete = this.state.shoppingDates.indexOf(existingShoppingDate);
+                  console.log('index of date to delete: ', indexOfDateToDelete);
+                  this.state.shoppingDates.splice(indexOfDateToDelete, 1);
+                  this.setActiveDate('');
+
+                  // TODO: add another possibility for deleting date - separately
+                  //   if (confirm(`There are no buys left for date ${buy.date}, do you want to delete this shopping date completely?`)) {
+                  //     console.log(`Prompted deleting of the date. Confirmed. The date ${buy.date} is going to be deleted...`);
+                  //     const indexOfDateToDelete = state.shoppingDates.find(shoppingDate => shoppingDate === existingShoppingDate);
+                  //     console.log('indexOfDateToDelete > ', indexOfDateToDelete);
+                  //   } else {
+                  //     console.log(`Prompted deleting of the date. Rejected. The date ${buy.date} is NOT going to be deleted.`);
+                  //     return false;
+                  //   }
+              }
+          }
+      })
+      .catch(function (err: Error) {
+          console.log('Fetch Error :-S', err);
+      });
+    }
 }
 
 export default App;

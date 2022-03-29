@@ -1,0 +1,15 @@
+@use '../../assets/styles/variables';
+
+.buy-section {
+  &__date {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0 1.5rem;
+  }
+  &__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: variables.$default-outline-color;
+    margin-right: .5rem;
+  }
+}

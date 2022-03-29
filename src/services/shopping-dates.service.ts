@@ -36,4 +36,15 @@ export class ShoppingDatesService {
               return response.data;
           })
     }
+
+    deleteBuy(dataSuffix: string): Promise<BuyInfo[]> {
+      return this.apiClient.get('/remove-buy?' + dataSuffix).then((response) => {
+        if (response.status !== 200) {
+          throw Error(
+            'Looks like there was a problem. Status Code: ' + response.status
+          );
+        }
+        return response.data;
+      });
+    }
 }
