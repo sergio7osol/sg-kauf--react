@@ -2,6 +2,7 @@ import axios from 'axios';
 import BuyInfo from '../types/BuyInfo';
 // import BuyInfo from '../types/BuyInfo';
 import DetailedDateInfo from '../types/DetailedDateInfo';
+import ResponseInfo from '../types/ResponseInfo';
 
 export class ShoppingDatesService {
     // private shoppingDates: BuyInfo[];
@@ -36,6 +37,16 @@ export class ShoppingDatesService {
               return response.data;
           })
     }
+
+    createBuy(dataSuffix: string): Promise<ResponseInfo> {
+      return this.apiClient.get('/save-buy?' + dataSuffix)
+          .then(response => {
+              if (response.status !== 200) {
+                  throw Error('Looks like there was a problem. Status Code: ' + response.status);
+              }
+              return response.data;
+          });
+  }
 
     deleteBuy(dataSuffix: string): Promise<BuyInfo[]> {
       return this.apiClient.get('/remove-buy?' + dataSuffix).then((response) => {

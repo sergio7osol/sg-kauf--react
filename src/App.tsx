@@ -13,6 +13,7 @@ import { LeftMenu } from './components/LeftMenu/LeftMenu';
 import { BuySection } from './components/BuySection/BuySection';
 import DetailedDateInfo from './types/DetailedDateInfo';
 import BuyInfo from './types/BuyInfo';
+import ResponseInfo from './types/ResponseInfo';
 
 interface Props { }
 interface State {
@@ -34,6 +35,7 @@ class App extends React.Component<Props, State> {
       activeDate: {} as DetailedDateInfo
     } as State;
     this.onDateSelected = this.onDateSelected.bind(this);
+    this.saveBuy = this.saveBuy.bind(this);
     this.removeBuy = this.removeBuy.bind(this);
   }
 
@@ -46,7 +48,7 @@ class App extends React.Component<Props, State> {
             <LeftMenu items={this.state.shoppingDates} activeItem={this.state.activeDate} loadingItem={this.state.loadingDate} chooseItem={this.onDateSelected} />
           </div>
           <div className="main-content__body col">
-            <BuySection activeDate={this.state.activeDate} removeBuy={this.removeBuy} />
+            <BuySection activeDate={this.state.activeDate} saveBuy={this.saveBuy} removeBuy={this.removeBuy} />
             <CloudsImage />
           </div>
         </div>
@@ -70,7 +72,7 @@ class App extends React.Component<Props, State> {
 
   onDateSelected(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, shoppingDate: DetailedDateInfo) {
     e.preventDefault();
-    console.log('shoppingDate: ', shoppingDate);
+    console.log('select date: ', shoppingDate.date);
     this.setLoadingDate(shoppingDate.date);
     this.setActiveDate(shoppingDate.date);
   } 
@@ -112,7 +114,49 @@ class App extends React.Component<Props, State> {
     }
   }
 
-  removeBuy (buy: BuyInfo): boolean | void {
+  saveBuy(buy: BuyInfo) {
+    const existingShoppingDate = this.state.shoppingDates.find((shoppingDate: DetailedDateInfo) => shoppingDate.date === buy.date);
+    const existingBuy = existingShoppingDate && existingShoppingDate.buys?.find((buyItem: BuyInfo) => {
+      return buyItem.time === buy.time;
+    });
+    if (existingBuy) {
+      if (window.confirm('The buy you try to add already exists, do you want to overwrite it with the new data?')) {
+        console.log(`Confirmed prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is going to be overwritten...`);
+      } else {
+        console.log(`Rejected prompt to overwrite the existing buy. The buy on ${buy.date} at ${buy.time} is NOT going to be overwritten...`);
+        return false;
+      }
+    }
+    let urlSuffix = `date=${buy.date}&time=${buy.time}`;
+    urlSuffix += `&currency=${buy.currency}`;
+    urlSuffix += `&country=${buy.address.country}`;
+    urlSuffix += `&city=${buy.address.city}`;
+    urlSuffix += `&index=${buy.address.index}`;
+    urlSuffix += `&street=${buy.address.street}`;
+    urlSuffix += `&houseNumber=${buy.address.houseNumber}`;
+    urlSuffix += `&payMethod=${buy.payMethod}`;
+    urlSuffix += `&shopName=${buy.shopName}`;
+    return this.shoppingDatesService.createBuy(urlSuffix)
+      .then((data: ResponseInfo) => {
+        if (data.success) {
+          // TODO: implement response data validation (hash)?
+          console.log('Saving buy. Success: ', data.success, ' Status: ', data.message);
+          this._addBuy(buy, existingShoppingDate, existingBuy);
+          this.setActiveDate(buy.date);
+          return true;
+        } else {
+          throw Error(data.message);
+        }
+        // state.activeDate
+        // thisApp.activeDateBuys = [...data];
+      })
+      .catch(function (err: Error) {
+        console.log('Fetch Error :-S', err);
+      });
+
+  }
+
+  removeBuy(buy: BuyInfo) {
     console.log('CHECK: ', this.state.shoppingDates);
     const existingShoppingDate = this.state.shoppingDates.find((shoppingDate: DetailedDateInfo) => shoppingDate.date === buy.date);
     const existingBuy = existingShoppingDate && existingShoppingDate.buys?.find((buyItem: BuyInfo) => buyItem.time === buy.time);
@@ -131,35 +175,58 @@ class App extends React.Component<Props, State> {
 
     this.shoppingDatesService.deleteBuy(urlSuffix) // TODO: make no response from server -> do it locally
       .then((newArray: BuyInfo[]) => {
-          if (newArray) {
-              console.log(`The buy on ${buy.date} at ${buy.time} was successfully removed. ${newArray.length} buys left for this date.`);
-              if (newArray.length) {
-                  if (existingShoppingDate && existingShoppingDate.buys) {
-                      existingShoppingDate.buys = newArray;
-                  }
-              } else if (existingShoppingDate) {
-                  console.log(`Date ${buy.date} with no buys left is going to be removed...`);
-                  const indexOfDateToDelete = this.state.shoppingDates.indexOf(existingShoppingDate);
-                  console.log('index of date to delete: ', indexOfDateToDelete);
-                  this.state.shoppingDates.splice(indexOfDateToDelete, 1);
-                  this.setActiveDate('');
+        if (newArray) {
+          console.log(`The buy on ${buy.date} at ${buy.time} was successfully removed. ${newArray.length} buys left for this date.`);
+          if (newArray.length) {
+            if (existingShoppingDate && existingShoppingDate.buys) {
+              existingShoppingDate.buys = newArray;
+            }
+          } else if (existingShoppingDate) {
+            console.log(`Date ${buy.date} with no buys left is going to be removed...`);
+            const indexOfDateToDelete = this.state.shoppingDates.indexOf(existingShoppingDate);
+            console.log('index of date to delete: ', indexOfDateToDelete);
+            this.state.shoppingDates.splice(indexOfDateToDelete, 1);
+            this.setActiveDate('');
 
-                  // TODO: add another possibility for deleting date - separately
-                  //   if (confirm(`There are no buys left for date ${buy.date}, do you want to delete this shopping date completely?`)) {
-                  //     console.log(`Prompted deleting of the date. Confirmed. The date ${buy.date} is going to be deleted...`);
-                  //     const indexOfDateToDelete = state.shoppingDates.find(shoppingDate => shoppingDate === existingShoppingDate);
-                  //     console.log('indexOfDateToDelete > ', indexOfDateToDelete);
-                  //   } else {
-                  //     console.log(`Prompted deleting of the date. Rejected. The date ${buy.date} is NOT going to be deleted.`);
-                  //     return false;
-                  //   }
-              }
+            // TODO: add another possibility for deleting date - separately
+            //   if (confirm(`There are no buys left for date ${buy.date}, do you want to delete this shopping date completely?`)) {
+            //     console.log(`Prompted deleting of the date. Confirmed. The date ${buy.date} is going to be deleted...`);
+            //     const indexOfDateToDelete = state.shoppingDates.find(shoppingDate => shoppingDate === existingShoppingDate);
+            //     console.log('indexOfDateToDelete > ', indexOfDateToDelete);
+            //   } else {
+            //     console.log(`Prompted deleting of the date. Rejected. The date ${buy.date} is NOT going to be deleted.`);
+            //     return false;
+            //   }
           }
+        }
       })
       .catch(function (err: Error) {
-          console.log('Fetch Error :-S', err);
+        console.log('Fetch Error :-S', err);
       });
+  }
+
+  _addBuy(newBuy: BuyInfo, storedDate: DetailedDateInfo | undefined, storedBuy: BuyInfo | undefined) {
+    if (!storedDate) {
+      storedDate = {
+        date: newBuy.date,
+        count: 0,
+        buys: []
+      };
+      this.state.shoppingDates.push(storedDate);
     }
+    if (storedBuy) {
+      storedBuy.currency = newBuy.currency;
+      storedBuy.address.index = newBuy.address.index;
+      storedBuy.address.country = newBuy.address.country;
+      storedBuy.address.city = newBuy.address.city;
+      storedBuy.address.street = newBuy.address.street;
+      storedBuy.address.houseNumber = newBuy.address.houseNumber;
+      storedBuy.payMethod = newBuy.payMethod;
+      storedBuy.shopName = newBuy.shopName;
+    } else {
+      storedDate?.buys?.push(newBuy);
+    }
+  }
 }
 
-export default App;
+export default App; 

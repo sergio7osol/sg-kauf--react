@@ -4,7 +4,7 @@ import { Buy } from './Buy/Buy';
 
 interface Props {
   buys: BuyInfo[] | undefined,
-  removeBuy: (buy: BuyInfo) => boolean | void
+  removeBuy: (buy: BuyInfo) => any
 }
 
 export const BuyList: React.FC<Props> = ({ buys = [], removeBuy }) => {
