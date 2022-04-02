@@ -1,4 +1,4 @@
-# UI Interface (React.js) for managing User expenses
+# React + Typescript + Primereact UI for SG-Kauf project
 
 ## Available Scripts
 
